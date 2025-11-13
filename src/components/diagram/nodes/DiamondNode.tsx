@@ -1,7 +1,12 @@
 import { memo } from "react";
 import { Handle, Position, NodeProps } from "reactflow";
+import { EditableText } from "../EditableText";
+import { useNodeEdit } from "../DiagramCanvas";
 
-export const DiamondNode = memo(({ data, selected }: NodeProps) => {
+export const DiamondNode = memo(({ data, selected, id }: NodeProps) => {
+  const { editingNodeId, setEditingNodeId, updateNodeData } = useNodeEdit();
+  const isEditing = editingNodeId === id;
+
   return (
     <div className="relative" style={{ width: "120px", height: "120px" }}>
       <Handle type="target" position={Position.Top} className="w-3 h-3 z-10" />
@@ -13,9 +18,18 @@ export const DiamondNode = memo(({ data, selected }: NodeProps) => {
           clipPath: "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)",
         }}
       >
-        <div className="text-sm font-medium text-foreground text-center px-2">
-          {data.label}
-        </div>
+        <EditableText
+          value={data.label || ""}
+          onChange={(value) => updateNodeData(id, { label: value })}
+          isEditing={isEditing}
+          onEditingChange={(editing) => setEditingNodeId(editing ? id : null)}
+          fontSize={data.fontSize}
+          fontWeight={data.fontWeight}
+          fontStyle={data.fontStyle}
+          color={data.textColor}
+          textAlign={data.textAlign}
+          className="font-medium text-foreground px-2"
+        />
       </div>
       <Handle type="source" position={Position.Bottom} className="w-3 h-3 z-10" />
     </div>

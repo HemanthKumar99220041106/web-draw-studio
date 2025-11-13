@@ -21,8 +21,8 @@ import {
   AlignVerticalJustifyCenter,
   Grid3x3,
 } from "lucide-react";
-import type { Tool } from "@/pages/Index";
-import { toast } from "sonner";
+import type { Tool } from "@/pages/DiagramEditor";
+import { toast } from "@/hooks/use-toast";
 
 interface ToolbarProps {
   activeTool: Tool;
@@ -45,27 +45,27 @@ export const Toolbar = ({ activeTool, onToolChange }: ToolbarProps) => {
   ];
 
   const handleCopy = () => {
-    toast.info("Copy functionality coming soon");
+    toast({ description: "Copy functionality coming soon" });
   };
 
   const handleDelete = () => {
-    toast.info("Delete selected items");
+    toast({ description: "Delete selected items" });
   };
 
   const handleAlignHorizontal = () => {
-    toast.info("Align horizontally");
+    toast({ description: "Align horizontally" });
   };
 
   const handleAlignVertical = () => {
-    toast.info("Align vertically");
+    toast({ description: "Align vertically" });
   };
 
   const handleSave = () => {
-    toast.success("Diagram saved successfully!");
+    toast({ description: "Diagram saved successfully!" });
   };
 
   const handleExport = () => {
-    toast.success("Exporting diagram...");
+    toast({ description: "Exporting diagram..." });
   };
 
   return (

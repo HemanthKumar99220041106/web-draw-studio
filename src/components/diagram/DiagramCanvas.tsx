@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, createContext, useContext } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -13,7 +13,7 @@ import ReactFlow, {
   NodeTypes,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import type { Tool } from "@/pages/Index";
+import type { Tool } from "@/pages/DiagramEditor";
 import { RectangleNode } from "./nodes/RectangleNode";
 import { CircleNode } from "./nodes/CircleNode";
 import { DiamondNode } from "./nodes/DiamondNode";
@@ -30,6 +30,22 @@ interface DiagramCanvasProps {
   activeTool: Tool;
   onNodeSelect: (nodeId: string | null) => void;
 }
+
+interface NodeEditContextType {
+  editingNodeId: string | null;
+  setEditingNodeId: (id: string | null) => void;
+  updateNodeData: (nodeId: string, data: any) => void;
+}
+
+const NodeEditContext = createContext<NodeEditContextType | null>(null);
+
+export const useNodeEdit = () => {
+  const context = useContext(NodeEditContext);
+  if (!context) {
+    throw new Error("useNodeEdit must be used within NodeEditContext.Provider");
+  }
+  return context;
+};
 
 const nodeTypes: NodeTypes = {
   rectangle: RectangleNode,
@@ -56,6 +72,18 @@ export const DiagramCanvas = ({ activeTool, onNodeSelect }: DiagramCanvasProps) 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
+  const [editingNodeId, setEditingNodeId] = useState<string | null>(null);
+
+  const updateNodeData = useCallback(
+    (nodeId: string, data: any) => {
+      setNodes((nds) =>
+        nds.map((node) =>
+          node.id === nodeId ? { ...node, data: { ...node.data, ...data } } : node
+        )
+      );
+    },
+    [setNodes]
+  );
 
   const onConnect = useCallback(
     (params: Connection) => setEdges((eds) => addEdge(params, eds)),
@@ -86,12 +114,26 @@ export const DiagramCanvas = ({ activeTool, onNodeSelect }: DiagramCanvasProps) 
         id: getId(),
         type,
         position,
-        data: { label: `${type} node` },
+        data: {
+          label: `${type} node`,
+          fontSize: 14,
+          fontWeight: "normal",
+          fontStyle: "normal",
+          textColor: "#000000",
+          textAlign: "center",
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
     [reactFlowInstance, setNodes]
+  );
+
+  const onNodeDoubleClick = useCallback(
+    (_event: React.MouseEvent, node: Node) => {
+      setEditingNodeId(node.id);
+    },
+    []
   );
 
   const onNodeClick = useCallback(
@@ -106,31 +148,34 @@ export const DiagramCanvas = ({ activeTool, onNodeSelect }: DiagramCanvasProps) 
   }, [onNodeSelect]);
 
   return (
-    <div ref={reactFlowWrapper} className="w-full h-full bg-canvas">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onInit={setReactFlowInstance}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        onNodeClick={onNodeClick}
-        onPaneClick={onPaneClick}
-        nodeTypes={nodeTypes}
-        fitView
-        panOnDrag={activeTool === "pan"}
-        selectionOnDrag={activeTool === "select"}
-      >
-        <Controls />
-        <MiniMap 
-          nodeColor="#3b82f6"
-          maskColor="rgba(0, 0, 0, 0.1)"
-          className="bg-card border border-border"
-        />
-        <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e5e7eb" />
-      </ReactFlow>
-    </div>
+    <NodeEditContext.Provider value={{ editingNodeId, setEditingNodeId, updateNodeData }}>
+      <div ref={reactFlowWrapper} className="w-full h-full bg-canvas">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onNodeClick={onNodeClick}
+          onNodeDoubleClick={onNodeDoubleClick}
+          onPaneClick={onPaneClick}
+          nodeTypes={nodeTypes}
+          fitView
+          panOnDrag={activeTool === "pan"}
+          selectionOnDrag={activeTool === "select"}
+        >
+          <Controls />
+          <MiniMap 
+            nodeColor="#3b82f6"
+            maskColor="rgba(0, 0, 0, 0.1)"
+            className="bg-card border border-border"
+          />
+          <Background variant={BackgroundVariant.Dots} gap={20} size={1} color="#e5e7eb" />
+        </ReactFlow>
+      </div>
+    </NodeEditContext.Provider>
   );
 };
