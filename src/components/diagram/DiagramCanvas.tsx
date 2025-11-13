@@ -17,6 +17,14 @@ import type { Tool } from "@/pages/Index";
 import { RectangleNode } from "./nodes/RectangleNode";
 import { CircleNode } from "./nodes/CircleNode";
 import { DiamondNode } from "./nodes/DiamondNode";
+import { ActorNode } from "./nodes/ActorNode";
+import { DatabaseNode } from "./nodes/DatabaseNode";
+import { CloudNode } from "./nodes/CloudNode";
+import { ComponentNode } from "./nodes/ComponentNode";
+import { InterfaceNode } from "./nodes/InterfaceNode";
+import { PackageNode } from "./nodes/PackageNode";
+import { NoteNode } from "./nodes/NoteNode";
+import { ServerNode } from "./nodes/ServerNode";
 
 interface DiagramCanvasProps {
   activeTool: Tool;
@@ -27,6 +35,14 @@ const nodeTypes: NodeTypes = {
   rectangle: RectangleNode,
   circle: CircleNode,
   diamond: DiamondNode,
+  actor: ActorNode,
+  database: DatabaseNode,
+  cloud: CloudNode,
+  component: ComponentNode,
+  interface: InterfaceNode,
+  package: PackageNode,
+  note: NoteNode,
+  server: ServerNode,
 };
 
 const initialNodes: Node[] = [];

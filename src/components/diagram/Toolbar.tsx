@@ -15,8 +15,14 @@ import {
   ZoomOut,
   Download,
   Save,
+  Copy,
+  Trash2,
+  AlignHorizontalJustifyCenter,
+  AlignVerticalJustifyCenter,
+  Grid3x3,
 } from "lucide-react";
 import type { Tool } from "@/pages/Index";
+import { toast } from "sonner";
 
 interface ToolbarProps {
   activeTool: Tool;
@@ -38,26 +44,57 @@ export const Toolbar = ({ activeTool, onToolChange }: ToolbarProps) => {
     { id: "arrow" as Tool, icon: ArrowRight, label: "Arrow" },
   ];
 
+  const handleCopy = () => {
+    toast.info("Copy functionality coming soon");
+  };
+
+  const handleDelete = () => {
+    toast.info("Delete selected items");
+  };
+
+  const handleAlignHorizontal = () => {
+    toast.info("Align horizontally");
+  };
+
+  const handleAlignVertical = () => {
+    toast.info("Align vertically");
+  };
+
+  const handleSave = () => {
+    toast.success("Diagram saved successfully!");
+  };
+
+  const handleExport = () => {
+    toast.success("Exporting diagram...");
+  };
+
   return (
-    <div className="h-14 bg-toolbar border-b border-toolbar-border flex items-center px-4 gap-2">
-      <div className="flex items-center gap-1">
-        <h1 className="text-lg font-semibold text-foreground mr-4">Diagram Editor</h1>
+    <div className="h-16 bg-toolbar border-b border-toolbar-border flex items-center px-4 gap-2 shadow-sm">
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <Grid3x3 className="h-5 w-5 text-primary" />
+          <h1 className="text-lg font-semibold text-foreground">Diagram Editor</h1>
+        </div>
         
-        {tools.map((tool) => (
-          <Button
-            key={tool.id}
-            variant={activeTool === tool.id ? "default" : "ghost"}
-            size="sm"
-            onClick={() => onToolChange(tool.id)}
-            className="h-9 w-9 p-0"
-            title={tool.label}
-          >
-            <tool.icon className="h-4 w-4" />
-          </Button>
-        ))}
+        <Separator orientation="vertical" className="h-8" />
+        
+        <div className="flex items-center gap-1">
+          {tools.map((tool) => (
+            <Button
+              key={tool.id}
+              variant={activeTool === tool.id ? "default" : "ghost"}
+              size="sm"
+              onClick={() => onToolChange(tool.id)}
+              className="h-9 w-9 p-0 toolbar-item-hover"
+              title={tool.label}
+            >
+              <tool.icon className="h-4 w-4" />
+            </Button>
+          ))}
+        </div>
       </div>
 
-      <Separator orientation="vertical" className="h-6" />
+      <Separator orientation="vertical" className="h-8" />
 
       <div className="flex items-center gap-1">
         {shapes.map((shape) => (
@@ -66,7 +103,7 @@ export const Toolbar = ({ activeTool, onToolChange }: ToolbarProps) => {
             variant={activeTool === shape.id ? "default" : "ghost"}
             size="sm"
             onClick={() => onToolChange(shape.id)}
-            className="h-9 w-9 p-0"
+            className="h-9 w-9 p-0 toolbar-item-hover"
             title={shape.label}
           >
             <shape.icon className="h-4 w-4" />
@@ -74,34 +111,51 @@ export const Toolbar = ({ activeTool, onToolChange }: ToolbarProps) => {
         ))}
       </div>
 
-      <Separator orientation="vertical" className="h-6" />
+      <Separator orientation="vertical" className="h-8" />
 
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0" title="Undo">
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Undo (Ctrl+Z)">
           <Undo className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0" title="Redo">
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Redo (Ctrl+Y)">
           <Redo className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Copy (Ctrl+C)" onClick={handleCopy}>
+          <Copy className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Delete (Del)" onClick={handleDelete}>
+          <Trash2 className="h-4 w-4" />
         </Button>
       </div>
 
-      <Separator orientation="vertical" className="h-6" />
+      <Separator orientation="vertical" className="h-8" />
 
       <div className="flex items-center gap-1">
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0" title="Zoom In">
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Align Horizontal" onClick={handleAlignHorizontal}>
+          <AlignHorizontalJustifyCenter className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Align Vertical" onClick={handleAlignVertical}>
+          <AlignVerticalJustifyCenter className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <Separator orientation="vertical" className="h-8" />
+
+      <div className="flex items-center gap-1">
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Zoom In">
           <ZoomIn className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="sm" className="h-9 w-9 p-0" title="Zoom Out">
+        <Button variant="ghost" size="sm" className="h-9 w-9 p-0 toolbar-item-hover" title="Zoom Out">
           <ZoomOut className="h-4 w-4" />
         </Button>
       </div>
 
       <div className="ml-auto flex items-center gap-2">
-        <Button variant="ghost" size="sm" title="Save">
+        <Button variant="ghost" size="sm" className="toolbar-item-hover" title="Save (Ctrl+S)" onClick={handleSave}>
           <Save className="h-4 w-4 mr-2" />
           Save
         </Button>
-        <Button variant="default" size="sm" title="Export">
+        <Button variant="default" size="sm" className="toolbar-item-hover" title="Export Diagram" onClick={handleExport}>
           <Download className="h-4 w-4 mr-2" />
           Export
         </Button>

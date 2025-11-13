@@ -11,22 +11,26 @@ interface PropertiesPanelProps {
 export const PropertiesPanel = ({ selectedNodeId }: PropertiesPanelProps) => {
   if (!selectedNodeId) {
     return (
-      <div className="w-64 bg-card border-l border-border flex items-center justify-center">
-        <p className="text-sm text-muted-foreground">Select a shape to edit properties</p>
+      <div className="w-80 bg-card border-l border-border flex items-center justify-center shadow-sm">
+        <div className="text-center p-6">
+          <p className="text-sm text-muted-foreground">Select a shape to edit properties</p>
+          <p className="text-xs text-muted-foreground/70 mt-2">Click on any element on the canvas</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="w-64 bg-card border-l border-border flex flex-col">
-      <div className="p-4 border-b border-border">
-        <h2 className="font-semibold text-sm text-foreground">Properties</h2>
+    <div className="w-80 bg-card border-l border-border flex flex-col shadow-sm">
+      <div className="p-4 border-b border-border bg-muted/30">
+        <h2 className="font-semibold text-sm text-foreground">Properties Panel</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">Customize selected shape</p>
       </div>
       
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-6">
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-muted-foreground">Position</h3>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Position</h3>
             <div className="space-y-2">
               <div>
                 <Label htmlFor="x" className="text-xs">X</Label>
@@ -40,7 +44,7 @@ export const PropertiesPanel = ({ selectedNodeId }: PropertiesPanelProps) => {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-muted-foreground">Size</h3>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Size</h3>
             <div className="space-y-2">
               <div>
                 <Label htmlFor="width" className="text-xs">Width</Label>
@@ -54,7 +58,7 @@ export const PropertiesPanel = ({ selectedNodeId }: PropertiesPanelProps) => {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-muted-foreground">Appearance</h3>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Appearance</h3>
             <div className="space-y-2">
               <div>
                 <Label htmlFor="fill" className="text-xs">Fill Color</Label>
@@ -72,7 +76,7 @@ export const PropertiesPanel = ({ selectedNodeId }: PropertiesPanelProps) => {
           </div>
 
           <div className="space-y-3">
-            <h3 className="text-xs font-medium text-muted-foreground">Text</h3>
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Text</h3>
             <div className="space-y-2">
               <div>
                 <Label htmlFor="text" className="text-xs">Content</Label>
